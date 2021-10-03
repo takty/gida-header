@@ -3,7 +3,7 @@
  * Gida Header - Fixed (JS)
  *
  * @author Takuto Yanagida
- * @version 2021-09-30
+ * @version 2021-10-04
  *
  */
 
@@ -21,12 +21,16 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 
 	const minWindowWidth      = opts['minWindowWidth']      ?? 600;
 	const maxHeaderHeightRate = opts['maxHeaderHeightRate'] ?? 0.2;
+	const minSwitchingOffset  = opts['minSwitchingOffset']  ?? 20;
 
 	let elm;
 	let elmTop;
 
-	let elmPh;
-	let isEnabled = false;
+	let isEnabled     = false;
+	let cmsBarHeight  = 0;
+	let lastSwitchedY = 0;
+	let origTop       = 0;
+	let offsetTop     = 0;
 
 
 	// -------------------------------------------------------------------------
@@ -39,11 +43,9 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 
 
 	document.addEventListener('DOMContentLoaded', function () {
-		elm = document.getElementsByClassName(CLS_ELM)[0];
-		elmTop = document.getElementsByClassName(CLS_ELM_TOP)[0];
-		if (!elm || !elmTop) return;
-
-		elmPh = document.createElement('div');
+		elm = id ? document.getElementById(id) : document.getElementsByClassName(CLS_ELM)[0];
+		if (!elm) return;
+		elmTop = elm.getElementsByClassName(CLS_ELM_TOP)[0] ?? elm;
 
 		onResize(onResizeHandler, true);
 		onScroll(update, true);
@@ -52,6 +54,7 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 	function onResizeHandler() {
 		setEnabled(isStickable());
 		if (isEnabled) {
+			cmsBarHeight = getCmsBarHeight();
 			adjustFloating();
 			update();
 		}
@@ -60,36 +63,25 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 	function setEnabled(flag) {
 		if (flag === isEnabled) return;
 		if (flag) {
-			elm.parentNode.insertBefore(elmPh, elm);
 			elm.classList.add(CLS_STICKY);
 		} else {
 			elm.classList.remove(CLS_STICKY, CLS_FLOATING, CLS_OFFSET);
-			elm.parentNode.removeChild(elmPh);
 			elm.style.top = null;
-			elm.style.transform = null;
 		}
 		isEnabled = flag;
 	}
 
 	function adjustFloating() {
-		const top = elmPh.getBoundingClientRect().top + window.pageYOffset;
-		elm.style.top = top + 'px';
+		origTop = getStaticTop(elm) + window.scrollY;
+		elm.style.top = origTop + offsetTop + 'px';
 	}
 
 	function update() {
 		if (!isEnabled) return;
 		setFloating(window.pageYOffset !== 0);
 
-		const origBcrTop = elmPh.getBoundingClientRect().top;
-		const top = origBcrTop + relativeOffsetTop(elm, elmTop);
-		if (top <= getWpAdminBarHeight()) {
-			const offset = origBcrTop + relativeOffsetTop(elm, elmTop) + window.pageYOffset - getWpAdminBarHeight();
-			elm.style.transform = `translateY(-${offset}px)`;
-			elm.classList.add(CLS_OFFSET);
-		} else {
-			elm.style.transform = null;
-			elm.classList.remove(CLS_OFFSET);
-		}
+		const top = getStaticTop(elm) + relativeOffsetTop(elm, elmTop);
+		setOffset(top <= cmsBarHeight);
 	}
 
 	function setFloating(flag) {
@@ -101,13 +93,31 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 		}
 	}
 
+	function setOffset(flag) {
+		if (elm.classList.contains(CLS_OFFSET) === flag) return;
+		if (Math.abs(lastSwitchedY - window.scrollY) <= minSwitchingOffset) return;
+		lastSwitchedY = window.scrollY;
+
+		offsetTop = flag ? (-origTop + cmsBarHeight - relativeOffsetTop(elm, elmTop)) : 0;
+		if (flag) {
+			elm.classList.add(CLS_OFFSET);
+		} else {
+			elm.classList.remove(CLS_OFFSET);
+		}
+		elm.style.top = origTop + offsetTop + 'px';
+	}
+
+	function getStaticTop(elm) {
+		const origPos = elm.style.position;
+		elm.style.position = 'static';
+		const top = elm.getBoundingClientRect().top;
+		elm.style.position = origPos;
+		return top;
+	}
+
 
 	// Common ------------------------------------------------------------------
 
-
-	function relativeOffsetTop(ancestor, target) {
-		return target.getBoundingClientRect().top - ancestor.getBoundingClientRect().top;
-	}
 
 	function isStickable() {
 		if (window.innerWidth < minWindowWidth) return false;

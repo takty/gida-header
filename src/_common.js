@@ -3,7 +3,7 @@
  * Common Functions (JS)
  *
  * @author Takuto Yanagida
- * @version 2021-09-30
+ * @version 2021-10-03
  *
  */
 
@@ -25,62 +25,9 @@ function onScroll(fn, doFirst = false) {
 // -----------------------------------------------------------------------------
 
 
-// const scrollableDetectionTargets = [];
-
-// function addScrollableDetectionTarget(tar) {
-// 	scrollableDetectionTargets.push(tar);
-// }
-
-// function initializeScrollableDetection() {
-// 	const rob = new ResizeObserver(oes => {
-// 		for (const oe of oes) detectScrollable(oe.target);
-// 	});
-// 	for (const tar of scrollableDetectionTargets) {
-// 		rob.observe(tar);
-// 		tar.addEventListener('scroll', throttle(() => { detectScrollable(tar); }));
-// 	}
-// }
-
-// function detectScrollable(elm) {
-// 	if (elm.scrollWidth - elm.clientWidth > 2) {  // for avoiding needless scrolling
-// 		const r = elm.scrollLeft / (elm.scrollWidth - elm.clientWidth);
-// 		elm.classList[r < 0.95 ? 'add' : 'remove']('scrollable-right');
-// 		elm.classList[0.05 < r ? 'add' : 'remove']('scrollable-left');
-// 	} else {
-// 		elm.classList.remove('scrollable-right');
-// 		elm.classList.remove('scrollable-left');
-// 	}
-// }
-
-
-// -----------------------------------------------------------------------------
-
-
-// function addHoverStateEventListener(items, clsCurrent, clsHover) {
-// 	const enter = (e) => {
-// 		if (e.pointerType === 'mouse' && !e.target.classList.contains(clsCurrent)) {
-// 			e.target.classList.add(clsHover);
-// 		}
-// 	}
-// 	const leave = (e) => {
-// 		if (e.pointerType === 'mouse' && !e.target.classList.contains(clsCurrent)) {
-// 			e.target.classList.remove(clsHover);
-// 		}
-// 	}
-// 	for (const it of items) {
-// 		it.addEventListener('pointerenter', enter);
-// 		it.addEventListener('pointerleave', leave);
-// 	}
-// }
-
-
-// -----------------------------------------------------------------------------
-
-
 document.addEventListener('DOMContentLoaded', () => {
 	window.addEventListener('resize', () => { for (const l of resizeListeners) l(); }, { passive: true });
 	window.addEventListener('scroll', () => { for (const l of scrollListeners) l(); }, { passive: true });
-	// initializeScrollableDetection();
 });
 
 function throttle(fn) {
@@ -100,7 +47,10 @@ function throttle(fn) {
 // -----------------------------------------------------------------------------
 
 
-function getWpAdminBarHeight() {
-	const e = document.getElementById('wpadminbar');
-	return (e && getComputedStyle(e).position === 'fixed') ? e.offsetHeight : 0;
+function relativeOffsetTop(ancestor, target) {
+	return target.getBoundingClientRect().top - ancestor.getBoundingClientRect().top;
+}
+
+function getCmsBarHeight() {
+	return parseFloat(getComputedStyle(document.documentElement).marginTop);
 }

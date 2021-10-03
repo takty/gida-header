@@ -3,7 +3,7 @@
  * Gida Header - Scroll (JS)
  *
  * @author Takuto Yanagida
- * @version 2021-09-30
+ * @version 2021-10-04
  *
  */
 
@@ -20,11 +20,14 @@ window['GIDA'].header_scroll = function (id = null, opts = {}) {
 
 	const minWindowWidth      = opts['minWindowWidth']      ?? 600;
 	const maxHeaderHeightRate = opts['maxHeaderHeightRate'] ?? 0.2;
+	const minSwitchingOffset  = opts['minSwitchingOffset']  ?? 20;
 
 	let elm;
 	let elmTop;
 
-	let isEnabled  = false;
+	let isEnabled     = false;
+	let cmsBarHeight  = 0;
+	let lastSwitchedY = 0;
 
 
 	// -------------------------------------------------------------------------
@@ -37,17 +40,18 @@ window['GIDA'].header_scroll = function (id = null, opts = {}) {
 
 
 	document.addEventListener('DOMContentLoaded', function () {
-		elm    = document.getElementsByClassName(CLS_ELM)[0];
-		elmTop = document.getElementsByClassName(CLS_ELM_TOP)[0];
-		if (!elm || !elmTop) return;
+		elm = id ? document.getElementById(id) : document.getElementsByClassName(CLS_ELM)[0];
+		if (!elm) return;
+		elmTop = elm.getElementsByClassName(CLS_ELM_TOP)[0] ?? elm;
 
 		onResize(onResizeHandler, true);
-		onScroll(update, true);
+		onScroll(update, true)
 	});
 
 	function onResizeHandler() {
 		setEnabled(isStickable());
 		if (isEnabled) {
+			cmsBarHeight = getCmsBarHeight();
 			adjustFloating();
 			update();
 		}
@@ -65,18 +69,21 @@ window['GIDA'].header_scroll = function (id = null, opts = {}) {
 	}
 
 	function adjustFloating() {
-		const top = getWpAdminBarHeight() - relativeOffsetTop(elm, elmTop);
+		const top = cmsBarHeight - relativeOffsetTop(elm, elmTop);
 		elm.style.top = top + 'px';
 	}
 
 	function update() {
 		if (!isEnabled) return;
 		const top = Math.floor(elmTop.getBoundingClientRect().top);
-		setFloating(top <= getWpAdminBarHeight());
+		setFloating(top <= cmsBarHeight);
 	}
 
 	function setFloating(flag) {
 		if (elm.classList.contains(CLS_FLOATING) === flag) return;
+		if (Math.abs(lastSwitchedY - window.scrollY) <= minSwitchingOffset) return;
+		lastSwitchedY = window.scrollY;
+
 		if (flag) {
 			elm.classList.add(CLS_FLOATING);
 		} else {
@@ -87,10 +94,6 @@ window['GIDA'].header_scroll = function (id = null, opts = {}) {
 
 	// Common ------------------------------------------------------------------
 
-
-	function relativeOffsetTop(ancestor, target) {
-		return target.getBoundingClientRect().top - ancestor.getBoundingClientRect().top;
-	}
 
 	function isStickable() {
 		if (window.innerWidth < minWindowWidth) return false;

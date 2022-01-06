@@ -3,7 +3,7 @@
  * Gida Header - Scroll (JS)
  *
  * @author Takuto Yanagida
- * @version 2021-10-04
+ * @version 2022-01-06
  *
  */
 
@@ -21,6 +21,7 @@ window['GIDA'].header_scroll = function (id = null, opts = {}) {
 	const minWindowWidth      = opts['minWindowWidth']      ?? 600;
 	const maxHeaderHeightRate = opts['maxHeaderHeightRate'] ?? 0.2;
 	const minSwitchingOffset  = opts['minSwitchingOffset']  ?? 20;
+	const scrollPaddingOffset = opts['scrollPaddingOffset'] ?? 8;
 
 	let elm;
 	let elmTop;
@@ -33,13 +34,16 @@ window['GIDA'].header_scroll = function (id = null, opts = {}) {
 	// -------------------------------------------------------------------------
 
 
+	// @include __scroll-padding-top.js
 	// @include _common.js
 
 
 	// -------------------------------------------------------------------------
 
 
-	document.addEventListener('DOMContentLoaded', function () {
+	document.addEventListener('DOMContentLoaded', () => {
+		initializeScrollPaddingTop();
+
 		elm = id ? document.getElementById(id) : document.getElementsByClassName(CLS_ELM)[0];
 		if (!elm) return;
 		elmTop = elm.getElementsByClassName(CLS_ELM_TOP)[0] ?? elm;
@@ -64,6 +68,8 @@ window['GIDA'].header_scroll = function (id = null, opts = {}) {
 		} else {
 			elm.classList.remove(CLS_STICKY, CLS_FLOATING);
 			elm.style.top = null;
+
+			setScrollPaddingTop('gida-header', null);
 		}
 		isEnabled = flag;
 	}
@@ -71,6 +77,9 @@ window['GIDA'].header_scroll = function (id = null, opts = {}) {
 	function adjustFloating() {
 		const top = cmsBarHeight - relativeOffsetTop(elm, elmTop);
 		elm.style.top = top + 'px';
+
+		const h = elm.getBoundingClientRect().height + top + scrollPaddingOffset;
+		setScrollPaddingTop('gida-header', h + 'px');
 	}
 
 	function update() {

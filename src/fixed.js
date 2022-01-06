@@ -3,7 +3,7 @@
  * Gida Header - Fixed (JS)
  *
  * @author Takuto Yanagida
- * @version 2021-10-04
+ * @version 2022-01-06
  *
  */
 
@@ -22,6 +22,7 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 	const minWindowWidth      = opts['minWindowWidth']      ?? 600;
 	const maxHeaderHeightRate = opts['maxHeaderHeightRate'] ?? 0.2;
 	const minSwitchingOffset  = opts['minSwitchingOffset']  ?? 20;
+	const scrollPaddingOffset = opts['scrollPaddingOffset'] ?? 8;
 
 	let elm;
 	let elmTop;
@@ -36,13 +37,16 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 	// -------------------------------------------------------------------------
 
 
+	// @include __scroll-padding-top.js
 	// @include _common.js
 
 
 	// -------------------------------------------------------------------------
 
 
-	document.addEventListener('DOMContentLoaded', function () {
+	document.addEventListener('DOMContentLoaded', () => {
+		initializeScrollPaddingTop();
+
 		elm = id ? document.getElementById(id) : document.getElementsByClassName(CLS_ELM)[0];
 		if (!elm) return;
 		elmTop = elm.getElementsByClassName(CLS_ELM_TOP)[0] ?? elm;
@@ -67,6 +71,8 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 		} else {
 			elm.classList.remove(CLS_STICKY, CLS_FLOATING, CLS_OFFSET);
 			elm.style.top = null;
+
+			setScrollPaddingTop('gida-header', null);
 		}
 		isEnabled = flag;
 	}
@@ -74,12 +80,14 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 	function adjustFloating() {
 		origTop = getStaticTop(elm) + window.scrollY;
 		elm.style.top = origTop + offsetTop + 'px';
+
+		const h = elm.getBoundingClientRect().height + origTop + offsetTop + scrollPaddingOffset;
+		setScrollPaddingTop('gida-header', h + 'px');
 	}
 
 	function update() {
 		if (!isEnabled) return;
 		setFloating(window.pageYOffset !== 0);
-
 		const top = getStaticTop(elm) + relativeOffsetTop(elm, elmTop);
 		setOffset(top <= cmsBarHeight);
 	}
@@ -105,6 +113,9 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 			elm.classList.remove(CLS_OFFSET);
 		}
 		elm.style.top = origTop + offsetTop + 'px';
+
+		const h = elm.getBoundingClientRect().height + origTop + offsetTop + scrollPaddingOffset;
+		setScrollPaddingTop('gida-header', h + 'px');
 	}
 
 	function getStaticTop(elm) {

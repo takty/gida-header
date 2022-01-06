@@ -3,7 +3,7 @@
  * Styles for Sample (SCSS)
  *
  * @author Takuto Yanagida
- * @version 2021-10-03
+ * @version 2022-01-06
  *
  */
 
@@ -11,37 +11,29 @@
 @use "sass:math";
 
 
-:root {
-	font-size  : 16px;
-	font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+*,
+::before,
+::after {
+	box-sizing: border-box;
+}
 
-	margin-top: 2rem;
+html {
+	scroll-behavior: smooth;
+
+	font-family: sans-serif;
+	line-height: 1.8;
+
+	margin-top: 2rem;  // As simulation of CMS bar
 }
 
 body {
-	min-height    : 200vh;
-	padding-top   : 4vh;
-	padding-bottom: 4vh;
-	overflow-x    : hidden;
-
-	background-color: #fff;
-}
-
-h1 small {
-	font-size: small;
-}
-
-pre {
-	margin: 0;
-	overflow-x: auto;
+	min-height   : 200vh;
+	padding-block: 4vh;
 }
 
 .content {
-	margin   : { left: auto; right: auto; }
-	max-width: 48rem;
-	width    : calc(100% - 2vw);
-
-	color: hsla(0, 0%, 0%, 0.75);
+	margin-inline: auto;
+	width        : min(calc(100% - 2vw), 48rem);
 }
 
 

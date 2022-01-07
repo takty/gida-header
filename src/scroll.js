@@ -3,7 +3,7 @@
  * Gida Header - Scroll (JS)
  *
  * @author Takuto Yanagida
- * @version 2022-01-06
+ * @version 2022-01-07
  *
  */
 
@@ -79,7 +79,7 @@ window['GIDA'].header_scroll = function (id = null, opts = {}) {
 		elm.style.top = top + 'px';
 
 		const h = elm.getBoundingClientRect().height + top + scrollPaddingOffset;
-		setScrollPaddingTop('gida-header', h + 'px');
+		setScrollPaddingTop('gida-header', h);
 	}
 
 	function update() {

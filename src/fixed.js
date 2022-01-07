@@ -3,7 +3,7 @@
  * Gida Header - Fixed (JS)
  *
  * @author Takuto Yanagida
- * @version 2022-01-06
+ * @version 2022-01-07
  *
  */
 
@@ -82,7 +82,7 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 		elm.style.top = origTop + offsetTop + 'px';
 
 		const h = elm.getBoundingClientRect().height + origTop + offsetTop + scrollPaddingOffset;
-		setScrollPaddingTop('gida-header', h + 'px');
+		setScrollPaddingTop('gida-header', h);
 	}
 
 	function update() {
@@ -115,7 +115,7 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 		elm.style.top = origTop + offsetTop + 'px';
 
 		const h = elm.getBoundingClientRect().height + origTop + offsetTop + scrollPaddingOffset;
-		setScrollPaddingTop('gida-header', h + 'px');
+		setScrollPaddingTop('gida-header', h);
 	}
 
 	function getStaticTop(elm) {

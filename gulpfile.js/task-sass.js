@@ -1,10 +1,8 @@
 /**
- *
- * Function for gulp (SASS)
+ * Function for gulp
  *
  * @author Takuto Yanagida
  * @version 2021-10-13
- *
  */
 
 'use strict';

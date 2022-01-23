@@ -1,10 +1,8 @@
 /**
- *
- * Gida Header - Fixed (JS)
+ * Gida Header - Fixed
  *
  * @author Takuto Yanagida
  * @version 2022-01-07
- *
  */
 
 

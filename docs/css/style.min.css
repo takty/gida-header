@@ -1,2 +1,76 @@
-*,::before,::after{box-sizing:border-box}html{scroll-behavior:smooth;font-family:sans-serif;line-height:1.8;margin-top:2rem}body{min-height:200vh;padding-block:4vh}.content{margin-inline:auto;width:min(100% - 2vw,48rem)}.entry-header{border:1px solid #777}.gida-header{-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);background-color:rgba(255,255,255,.95);border:red 1px dashed;transition:box-shadow .5s,background-color .5s}.gida-header.sticky{background-color:rgba(0,128,0,.1)}.gida-header.floating{background-color:rgba(0,0,255,.1);box-shadow:0 .25rem .25rem 0 rgba(0,0,0,.25)}.gida-header.offset{background-color:rgba(255,165,0,.1)}.gida-header+*{margin-top:2rem}.gida-header .gida-header-top{border:blue 1px dashed;padding-bottom:4rem;transition:padding 1s}.gida-header.sticky{position:sticky}.gida-header.fixed.sticky{transition:top 1s,box-shadow .2s,background-color .2s}.gida-header.fixed.offset .gida-header-top{padding-bottom:3rem}.gida-header.scroll.floating .gida-header-top{padding-bottom:3rem}
+/**
+ *
+ * Styles for Sample (SCSS)
+ *
+ * @author Takuto Yanagida
+ * @version 2022-01-06
+ *
+ */
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: sans-serif;
+  line-height: 1.8;
+  margin-top: 2rem;
+}
+
+body {
+  min-height: 200vh;
+  padding-block: 4vh;
+}
+
+.content {
+  margin-inline: auto;
+  width: min(100% - 2vw, 48rem);
+}
+
+.entry-header {
+  border: 1px solid #777;
+}
+
+.gida-header {
+  -webkit-backdrop-filter: blur(2px);
+          backdrop-filter: blur(2px);
+  background-color: rgba(255, 255, 255, 0.95);
+  border: red 1px dashed;
+  transition: box-shadow 0.5s, background-color 0.5s;
+}
+.gida-header.sticky {
+  background-color: rgba(0, 128, 0, 0.1);
+}
+.gida-header.floating {
+  background-color: rgba(0, 0, 255, 0.1);
+  box-shadow: 0 0.25rem 0.25rem 0 rgba(0, 0, 0, 0.25);
+}
+.gida-header.offset {
+  background-color: rgba(255, 165, 0, 0.1);
+}
+.gida-header + * {
+  margin-top: 2rem;
+}
+.gida-header .gida-header-top {
+  border: blue 1px dashed;
+  padding-bottom: 4rem;
+  transition: padding 1s;
+}
+
+.gida-header.sticky {
+  position: sticky;
+}
+.gida-header.fixed.sticky {
+  transition: top 1s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.gida-header.fixed.offset .gida-header-top {
+  padding-bottom: 3rem;
+}
+
+.gida-header.scroll.floating .gida-header-top {
+  padding-bottom: 3rem;
+}
 /*# sourceMappingURL=style.min.css.map */

@@ -1,10 +1,8 @@
 /**
- *
  * Scroll Padding Top
  *
  * @author Takuto Yanagida
  * @version 2022-01-07
- *
  */
 
 

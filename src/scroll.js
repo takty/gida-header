@@ -1,10 +1,8 @@
 /**
- *
- * Gida Header - Scroll (JS)
+ * Gida Header - Scroll
  *
  * @author Takuto Yanagida
  * @version 2022-01-07
- *
  */
 
 

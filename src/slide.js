@@ -15,7 +15,6 @@ window['GIDA'].header_slide = function (id = null, opts = {}) {
 
 	const CLS_STICKY   = 'sticky';
 	const CLS_FLOATING = 'floating';
-	const CLS_STATIC   = 'static';
 
 	const minWindowWidth      = opts['minWindowWidth']      ?? 600;
 	const maxHeaderHeightRate = opts['maxHeaderHeightRate'] ?? 0.2;
@@ -84,7 +83,6 @@ window['GIDA'].header_slide = function (id = null, opts = {}) {
 		origBottom = r.bottom + window.scrollY;
 		floatTop   = Math.ceil(cmsBarHeight - relativeOffsetTop(elm, elmTop));
 
-		// elm.style.top = origTop - window.scrollY + 'px';
 		const h = r.bottom + scrollPaddingOffset;
 		setScrollPaddingTop('gida-header', h);
 	}
@@ -104,10 +102,8 @@ window['GIDA'].header_slide = function (id = null, opts = {}) {
 			setTimeout(() => { elm.style.top = floatTop + 'px'; }, 0);
 		} else {
 			if (window.scrollY + cmsBarHeight < origBottom) {
-				// elm.classList.add(CLS_STATIC);
 				elm.style.top = null;
 				elm.classList.remove(CLS_FLOATING);
-				// setTimeout(() => elm.classList.remove(CLS_STATIC), 0);
 			} else {
 				elm.style.top = origTop - window.scrollY + 'px';
 				st = setTimeout(() => {

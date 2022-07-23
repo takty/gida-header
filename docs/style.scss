@@ -2,12 +2,17 @@
  * Styles for Sample (SCSS)
  *
  * @author Takuto Yanagida
- * @version 2022-01-06
+ * @version 2022-07-23
  */
 
 
 @use "sass:math";
 
+
+:root {
+	font-size  : 16px;
+	font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
 
 *,
 ::before,
@@ -27,6 +32,14 @@ html {
 body {
 	min-height   : 200vh;
 	padding-block: 4vh;
+
+	min-height   : 200dvh;
+	padding-block: 4dvh;
+}
+
+pre {
+	margin: 0;
+	overflow-x: auto;
 }
 
 .content {
@@ -87,12 +100,12 @@ body {
 .gida-header.fixed {
 	&.sticky {
 		position  : sticky;
-		transition: top 1s, box-shadow 0.2s, background-color 0.2s;
+		transition: top 0.2s, box-shadow 0.2s, background-color 0.2s;
 	}
 	&.offset {
 		.gida-header-top {
 			padding-bottom: 3rem;
-			transition    : padding 1s;
+			transition    : padding 0.2s;
 		}
 	}
 }
@@ -105,21 +118,26 @@ body {
 	&.floating {
 		.gida-header-top {
 			padding-bottom: 3rem;
-			transition    : padding 1s;
+			transition    : padding 0.2s;
 		}
 	}
 }
 
 .gida-header.slide {
 	&.sticky {
-		transition: top 0.2s, box-shadow 0.2s, background-color 0.2s;
+		transition: top 0.1s, box-shadow 0.1s, background-color 0.1s;
+
+		.gida-header-top {
+			transition: padding 0.1s;
+		}
 	}
 	&.floating {
-		position: sticky;
-		transition: top 1s, box-shadow 0.2s, background-color 0.2s;
+		position  : sticky;
+		transition: top 0.2s, box-shadow 0.2s, background-color 0.2s;
 
 		.gida-header-top {
 			padding-bottom: 3rem;
+			transition    : none;
 		}
 	}
 }

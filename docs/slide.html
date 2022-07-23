@@ -7,8 +7,8 @@
 <meta name="author" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="">
-<link rel="stylesheet" href="css/style.min.css?v101049t">
-<script src="js/slide.min.js?v101049t"></script>
+<link rel="stylesheet" href="css/style.min.css?v163017t">
+<script src="js/slide.min.js?v163017t"></script>
 <script>window['GIDA'].header_slide();</script>
 </head>
 <body>
@@ -20,6 +20,20 @@
 		</nav>
 	</header>
 	<div>
+		<pre><code>
+.gida-header {
+    &.sticky {
+        transition: top 0.1s, box-shadow 0.1s;
+    }
+    &.floating {
+        position  : sticky;
+        transition: top 0.2s, box-shadow 0.2s;
+
+        .gida-header-top {
+        }
+    }
+}
+</code></pre>
 		<p><a href="#alt">Anchor Link</a></p>
 		<p>One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible
 		vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed

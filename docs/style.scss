@@ -43,46 +43,83 @@ body {
 }
 
 .gida-header {
-	&.sticky   { background-color: rgb(green, 0.1); }
+	&.sticky   {
+		backdrop-filter : blur(2px);
+		background-color: rgba(#fff, 0.95);
+		border          : red 1px dashed;
+		--state: 'sticky';
+	}
 	&.floating {
 		background-color: rgb(blue, 0.1);
-		box-shadow: 0 0.25rem 0.25rem 0 rgba(#000, 0.25);
+		box-shadow      : 0 0.25rem 0.25rem 0 rgba(#000, 0.25);
+		--state: 'floating';
 	}
-	&.offset   { background-color: rgb(orange, 0.1); }
+	&.offset {
+		background-color: rgb(green, 0.1);
+		--state: 'offset';
+	}
 
-	backdrop-filter : blur(2px);
-	background-color: rgba(#fff, 0.95);
-	border          : red 1px dashed;
+	position: relative;
+	&::after {
+		content : var(--state);
+		position: absolute;
+		right   : 0;
+		bottom  : 0;
+
+		padding-inline: 0.5rem;
+		font-weight   : bold;
+	}
 
 	& + * {
 		margin-top: 2rem;
 	}
 
 	.gida-header-top {
-		border: blue 1px dashed;
+		border        : blue 1px dashed;
 		padding-bottom: 4rem;
-		transition: padding 1s;
 	}
-	transition: box-shadow 0.5s, background-color 0.5s;
 }
 
-.gida-header {
-	&.sticky {
-		position: sticky;
-	}
-	&.fixed.sticky {
-		transition: top 1s, box-shadow 0.2s, background-color 0.2s;
-	}
-}
+
+// -----------------------------------------------------------------------------
+
 
 .gida-header.fixed {
+	&.sticky {
+		position  : sticky;
+		transition: top 1s, box-shadow 0.2s, background-color 0.2s;
+	}
 	&.offset {
-		.gida-header-top { padding-bottom: 3rem; }
+		.gida-header-top {
+			padding-bottom: 3rem;
+			transition    : padding 1s;
+		}
 	}
 }
 
 .gida-header.scroll {
+	&.sticky {
+		position  : sticky;
+		transition: box-shadow 0.2s, background-color 0.2s;
+	}
 	&.floating {
-		.gida-header-top { padding-bottom: 3rem; }
+		.gida-header-top {
+			padding-bottom: 3rem;
+			transition    : padding 1s;
+		}
+	}
+}
+
+.gida-header.slide {
+	&.sticky {
+		transition: top 0.2s, box-shadow 0.2s, background-color 0.2s;
+	}
+	&.floating {
+		position: sticky;
+		transition: top 1s, box-shadow 0.2s, background-color 0.2s;
+
+		.gida-header-top {
+			padding-bottom: 3rem;
+		}
 	}
 }

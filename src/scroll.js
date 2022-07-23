@@ -2,7 +2,7 @@
  * Gida Header - Scroll
  *
  * @author Takuto Yanagida
- * @version 2022-01-07
+ * @version 2022-07-23
  */
 
 
@@ -39,7 +39,7 @@ window['GIDA'].header_scroll = function (id = null, opts = {}) {
 	// -------------------------------------------------------------------------
 
 
-	document.addEventListener('DOMContentLoaded', () => {
+	onLoad(() => {
 		initializeScrollPaddingTop();
 
 		elm = id ? document.getElementById(id) : document.getElementsByClassName(CLS_ELM)[0];

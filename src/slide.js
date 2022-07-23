@@ -1,5 +1,5 @@
 /**
- * Gida Header - Fixed
+ * Gida Header - Slide
  *
  * @author Takuto Yanagida
  * @version 2022-07-23
@@ -9,18 +9,19 @@
 window['GIDA'] = window['GIDA'] ?? {};
 
 
-window['GIDA'].header_fixed = function (id = null, opts = {}) {
+window['GIDA'].header_slide = function (id = null, opts = {}) {
 	const CLS_ELM     = 'gida-header';
 	const CLS_ELM_TOP = 'gida-header-top';
 
 	const CLS_STICKY   = 'sticky';
 	const CLS_FLOATING = 'floating';
-	const CLS_OFFSET   = 'offset';
+	const CLS_STATIC   = 'static';
 
 	const minWindowWidth      = opts['minWindowWidth']      ?? 600;
 	const maxHeaderHeightRate = opts['maxHeaderHeightRate'] ?? 0.2;
 	const minSwitchingOffset  = opts['minSwitchingOffset']  ?? 20;
 	const scrollPaddingOffset = opts['scrollPaddingOffset'] ?? 8;
+	const slideMargin         = opts['slideMargin']         ?? 200;
 
 	let elm;
 	let elmTop;
@@ -29,7 +30,8 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 	let cmsBarHeight  = 0;
 	let lastSwitchedY = 0;
 	let origTop       = 0;
-	let offsetTop     = 0;
+	let origBottom    = 0;
+	let floatTop      = 0;
 
 
 	// -------------------------------------------------------------------------
@@ -50,7 +52,7 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 		elmTop = elm.getElementsByClassName(CLS_ELM_TOP)[0] ?? elm;
 
 		onResize(onResizeHandler, true);
-		onScroll(update, true);
+		onScroll(update, true)
 	});
 
 	function onResizeHandler() {
@@ -67,7 +69,7 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 		if (flag) {
 			elm.classList.add(CLS_STICKY);
 		} else {
-			elm.classList.remove(CLS_STICKY, CLS_FLOATING, CLS_OFFSET);
+			elm.classList.remove(CLS_STICKY, CLS_FLOATING);
 			elm.style.top = null;
 
 			setScrollPaddingTop('gida-header', null);
@@ -76,44 +78,44 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 	}
 
 	function adjustFloating() {
-		origTop = getStaticBoundingClientRect(elm).top + window.scrollY;
-		elm.style.top = origTop + offsetTop + 'px';
+		const r = getStaticBoundingClientRect(elm);
 
-		const h = elm.getBoundingClientRect().height + origTop + offsetTop + scrollPaddingOffset;
+		origTop    = r.top + window.scrollY;
+		origBottom = r.bottom + window.scrollY;
+		floatTop   = Math.ceil(cmsBarHeight - relativeOffsetTop(elm, elmTop));
+
+		// elm.style.top = origTop - window.scrollY + 'px';
+		const h = r.bottom + scrollPaddingOffset;
 		setScrollPaddingTop('gida-header', h);
 	}
+
+	let st = null;
 
 	function update() {
 		if (!isEnabled) return;
-		setFloating(window.pageYOffset !== 0);
-		const top = getStaticBoundingClientRect(elm).top + relativeOffsetTop(elm, elmTop);
-		setOffset(top <= cmsBarHeight);
-	}
-
-	function setFloating(flag) {
-		if (elm.classList.contains(CLS_FLOATING) === flag) return;
-		if (flag) {
-			elm.classList.add(CLS_FLOATING);
-		} else {
-			elm.classList.remove(CLS_FLOATING);
-		}
-	}
-
-	function setOffset(flag) {
-		if (elm.classList.contains(CLS_OFFSET) === flag) return;
 		if (Math.abs(lastSwitchedY - window.scrollY) <= minSwitchingOffset) return;
 		lastSwitchedY = window.scrollY;
 
-		offsetTop = flag ? (-origTop + cmsBarHeight - relativeOffsetTop(elm, elmTop)) : 0;
-		if (flag) {
-			elm.classList.add(CLS_OFFSET);
-		} else {
-			elm.classList.remove(CLS_OFFSET);
-		}
-		elm.style.top = origTop + offsetTop + 'px';
+		clearTimeout(st);
 
-		const h = elm.getBoundingClientRect().height + origTop + offsetTop + scrollPaddingOffset;
-		setScrollPaddingTop('gida-header', h);
+		if (origBottom + slideMargin <= window.scrollY + cmsBarHeight) {
+			elm.classList.add(CLS_FLOATING);
+			elm.style.top = origTop - window.scrollY + 'px';
+			setTimeout(() => { elm.style.top = floatTop + 'px'; }, 0);
+		} else {
+			if (window.scrollY + cmsBarHeight < origBottom) {
+				// elm.classList.add(CLS_STATIC);
+				elm.style.top = null;
+				elm.classList.remove(CLS_FLOATING);
+				// setTimeout(() => elm.classList.remove(CLS_STATIC), 0);
+			} else {
+				elm.style.top = origTop - window.scrollY + 'px';
+				st = setTimeout(() => {
+					elm.style.top = null;
+					elm.classList.remove(CLS_FLOATING);
+				}, 200);
+			}
+		}
 	}
 
 

@@ -2,7 +2,7 @@
  * Gulpfile
  *
  * @author Takuto Yanagida
- * @version 2022-03-23
+ * @version 2022-07-22
  */
 
 
@@ -22,6 +22,7 @@ const { makeTimestampTask } = require('./task-timestamp');
 const js = gulp.parallel(
 	makeJsTask('./src/fixed.js',  './dist/js'),
 	makeJsTask('./src/scroll.js', './dist/js'),
+	makeJsTask('./src/slide.js', './dist/js'),
 );
 
 exports.build = gulp.parallel(js);

@@ -2,7 +2,7 @@
  * Common Functions
  *
  * @author Takuto Yanagida
- * @version 2021-10-03
+ * @version 2022-07-23
  */
 
 
@@ -19,11 +19,19 @@ function onScroll(fn, doFirst = false) {
 	scrollListeners.push(throttle(fn));
 }
 
+function onLoad(fn) {
+	if ('loading' === document.readyState) {
+		document.addEventListener('DOMContentLoaded', fn);
+	} else {
+		setTimeout(fn, 0);
+	}
+}
+
 
 // -----------------------------------------------------------------------------
 
 
-document.addEventListener('DOMContentLoaded', () => {
+onLoad(() => {
 	window.addEventListener('resize', () => { for (const l of resizeListeners) l(); }, { passive: true });
 	window.addEventListener('scroll', () => { for (const l of scrollListeners) l(); }, { passive: true });
 });
@@ -44,6 +52,14 @@ function throttle(fn) {
 
 // -----------------------------------------------------------------------------
 
+
+function getStaticBoundingClientRect(elm) {
+	const origPos = elm.style.position;
+	elm.style.position = 'static';
+	const r = elm.getBoundingClientRect();
+	elm.style.position = origPos;
+	return r;
+}
 
 function relativeOffsetTop(ancestor, target) {
 	return target.getBoundingClientRect().top - ancestor.getBoundingClientRect().top;

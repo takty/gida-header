@@ -91,12 +91,16 @@ window['GIDA'].header_slide = function (id = null, opts = {}) {
 
 	function update() {
 		if (!isEnabled) return;
+		setFloating(origBottom + slideMargin <= window.scrollY + cmsBarHeight);
+	}
+
+	function setFloating(flag) {
+		if (elm.classList.contains(CLS_FLOATING) === flag) return;
 		if (Math.abs(lastSwitchedY - window.scrollY) <= minSwitchingOffset) return;
 		lastSwitchedY = window.scrollY;
 
 		clearTimeout(st);
-
-		if (origBottom + slideMargin <= window.scrollY + cmsBarHeight) {
+		if (flag) {
 			elm.classList.add(CLS_FLOATING);
 			elm.style.top = origTop - window.scrollY + 'px';
 			setTimeout(() => { elm.style.top = floatTop + 'px'; }, 0);

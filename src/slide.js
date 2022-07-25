@@ -2,7 +2,7 @@
  * Gida Header - Slide
  *
  * @author Takuto Yanagida
- * @version 2022-07-23
+ * @version 2022-07-25
  */
 
 
@@ -19,6 +19,7 @@ window['GIDA'].header_slide = function (id = null, opts = {}) {
 	const minWindowWidth      = opts['minWindowWidth']      ?? 600;
 	const maxHeaderHeightRate = opts['maxHeaderHeightRate'] ?? 0.2;
 	const minSwitchingOffset  = opts['minSwitchingOffset']  ?? 20;
+	const minSwitchingTime    = opts['minSwitchingTime']    ?? 200;
 	const scrollPaddingOffset = opts['scrollPaddingOffset'] ?? 8;
 	const slideMargin         = opts['slideMargin']         ?? 200;
 
@@ -28,9 +29,11 @@ window['GIDA'].header_slide = function (id = null, opts = {}) {
 	let isEnabled     = false;
 	let cmsBarHeight  = 0;
 	let lastSwitchedY = 0;
+	let lastSwitchedT = 0;
 	let origTop       = 0;
 	let origBottom    = 0;
 	let floatTop      = 0;
+	let st            = null;
 
 
 	// -------------------------------------------------------------------------
@@ -69,7 +72,8 @@ window['GIDA'].header_slide = function (id = null, opts = {}) {
 			elm.classList.add(CLS_STICKY);
 		} else {
 			elm.classList.remove(CLS_STICKY, CLS_FLOATING);
-			elm.style.top = null;
+			elm.style.position = null;
+			elm.style.top      = null;
 
 			setScrollPaddingTop('gida-header', null);
 		}
@@ -87,8 +91,6 @@ window['GIDA'].header_slide = function (id = null, opts = {}) {
 		setScrollPaddingTop('gida-header', h);
 	}
 
-	let st = null;
-
 	function update() {
 		if (!isEnabled) return;
 		setFloating(origBottom + slideMargin <= window.scrollY + cmsBarHeight);
@@ -98,21 +100,29 @@ window['GIDA'].header_slide = function (id = null, opts = {}) {
 		if (elm.classList.contains(CLS_FLOATING) === flag) return;
 		if (Math.abs(lastSwitchedY - window.scrollY) <= minSwitchingOffset) return;
 		lastSwitchedY = window.scrollY;
+		if (Math.abs(lastSwitchedT - performance.now()) <= minSwitchingTime) return;
+		lastSwitchedT = performance.now();
 
 		clearTimeout(st);
 		if (flag) {
 			elm.classList.add(CLS_FLOATING);
-			elm.style.top = origTop - window.scrollY + 'px';
-			setTimeout(() => { elm.style.top = floatTop + 'px'; }, 0);
+
+			elm.style.position = 'sticky';
+			elm.style.top      = origTop - window.scrollY + 'px';
+			st = setTimeout(() => {
+				elm.style.top = floatTop + 'px';
+			}, 0);
 		} else {
+			elm.classList.remove(CLS_FLOATING);
+
 			if (window.scrollY + cmsBarHeight < origBottom) {
-				elm.style.top = null;
-				elm.classList.remove(CLS_FLOATING);
+				elm.style.position = null;
+				elm.style.top      = null;
 			} else {
 				elm.style.top = origTop - window.scrollY + 'px';
 				st = setTimeout(() => {
-					elm.style.top = null;
-					elm.classList.remove(CLS_FLOATING);
+					elm.style.position = null;
+					elm.style.top      = null;
 				}, 200);
 			}
 		}

@@ -7,8 +7,8 @@
 <meta name="author" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="">
-<link rel="stylesheet" href="css/style.min.css?v233648t">
-<script src="js/fixed.min.js?v233648t"></script>
+<link rel="stylesheet" href="css/style.min.css?v235459t">
+<script src="js/fixed.min.js?v235459t"></script>
 <script>window['GIDA'].header_fixed();</script>
 </head>
 <body>
@@ -23,11 +23,15 @@
 		<pre><code>
 .gida-header {
     &.sticky {
-        position  : sticky;
-        transition: box-shadow 0.2s;
+        transition: top 0.2s, box-shadow 0.2s;
+
+        .gida-header-top {
+            <i>transition: padding 0.2s;</i>
+        }
     }
     &.offset {
         .gida-header-top {
+            <i>padding-bottom: 2rem;</i>
         }
     }
 }

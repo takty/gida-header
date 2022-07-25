@@ -2,7 +2,7 @@
  * Styles for Sample (SCSS)
  *
  * @author Takuto Yanagida
- * @version 2022-07-23
+ * @version 2022-07-25
  */
 
 
@@ -89,7 +89,7 @@ pre {
 
 	.gida-header-top {
 		border        : blue 1px dashed;
-		padding-bottom: 4rem;
+		padding-bottom: 5rem;
 	}
 }
 
@@ -99,45 +99,43 @@ pre {
 
 .gida-header.fixed {
 	&.sticky {
-		position  : sticky;
-		transition: top 0.2s, box-shadow 0.2s, background-color 0.2s;
+		transition: top 0.2s, box-shadow 0.2s;
+
+		.gida-header-top {
+			transition: padding 0.2s;
+		}
 	}
 	&.offset {
 		.gida-header-top {
-			padding-bottom: 3rem;
-			transition    : padding 0.2s;
+			padding-bottom: 2rem;
 		}
 	}
 }
 
 .gida-header.scroll {
 	&.sticky {
-		position  : sticky;
-		transition: box-shadow 0.2s, background-color 0.2s;
+		transition: box-shadow 0.2s;
+
+		.gida-header-top {
+			transition: padding 0.2s;
+		}
 	}
 	&.floating {
 		.gida-header-top {
-			padding-bottom: 3rem;
-			transition    : padding 0.2s;
+			padding-bottom: 2rem;
 		}
 	}
 }
 
 .gida-header.slide {
 	&.sticky {
-		transition: top 0.1s, box-shadow 0.1s, background-color 0.1s;
-
-		.gida-header-top {
-			transition: padding 0.1s;
-		}
+		transition: top 0.4s, box-shadow 0.2s;
 	}
 	&.floating {
-		position  : sticky;
-		transition: top 0.2s, box-shadow 0.2s, background-color 0.2s;
+		transition: top 1s, box-shadow 0.2s;
 
 		.gida-header-top {
-			padding-bottom: 3rem;
-			transition    : none;
+			padding-bottom: 2rem;
 		}
 	}
 }

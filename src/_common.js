@@ -2,7 +2,7 @@
  * Common Functions
  *
  * @author Takuto Yanagida
- * @version 2022-07-23
+ * @version 2022-07-27
  */
 
 
@@ -61,10 +61,36 @@ function getStaticBoundingClientRect(elm) {
 	return r;
 }
 
-function relativeOffsetTop(ancestor, target) {
+function remainingHeight(ancestor, target) {
 	return target.getBoundingClientRect().top - ancestor.getBoundingClientRect().top;
 }
 
 function getCmsBarHeight() {
 	return parseFloat(getComputedStyle(document.documentElement).marginTop);
+}
+
+function getViewHeightDifference() {
+	const de = document.createElement('div');
+	de.style.opacity  = 0;
+	de.style.position = 'absolute';
+	de.style.height   = 'calc(100lvh - 100svh)';
+	document.body.appendChild(de);
+	const vhd = de.clientHeight;
+	document.body.removeChild(de);
+	return vhd;
+}
+
+
+// -----------------------------------------------------------------------------
+
+
+function scrollToHash() {
+	const hash = window.location.hash;
+	if (!hash || hash.length < 2 || '#' !== hash[0]) return;
+	const t = document.getElementById(hash.substring(1));
+	if (!t) return;
+	setTimeout(() => {
+		const spt = parseInt(document.documentElement.style.scrollPaddingTop, 10);
+		window.scrollTo(0, t.getBoundingClientRect().top + window.pageYOffset - spt);
+	}, 0);
 }

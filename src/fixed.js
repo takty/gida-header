@@ -2,7 +2,7 @@
  * Gida Header - Fixed
  *
  * @author Takuto Yanagida
- * @version 2022-07-25
+ * @version 2022-07-27
  */
 
 
@@ -19,9 +19,10 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 
 	const minWindowWidth      = opts['minWindowWidth']      ?? 600;
 	const maxHeaderHeightRate = opts['maxHeaderHeightRate'] ?? 0.2;
-	const minSwitchingOffset  = opts['minSwitchingOffset']  ?? 20;
+	const minSwitchingOffset  = opts['minSwitchingOffset']  ?? 100;
 	const minSwitchingTime    = opts['minSwitchingTime']    ?? 200;
 	const scrollPaddingOffset = opts['scrollPaddingOffset'] ?? 8;
+	const margin              = opts['margin']              ?? 100;
 
 	let elm;
 	let elmTop;
@@ -29,9 +30,14 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 	let isEnabled     = false;
 	let cmsBarHeight  = 0;
 	let lastSwitchedY = 0;
-	let lastSwitchedT = 0;
+	let lastSwitchedT = Number.MAX_SAFE_INTEGER;
 	let origTop       = 0;
+	let origMid       = 0;
 	let offsetTop     = 0;
+
+	let safePaddingOffset = 0;
+	let vhd               = 0;
+	const isIos = null !== navigator.userAgent.match(/iPad|iPhone|iPod/) || (navigator.platform === 'MacIntel' && 1 < navigator.maxTouchPoints);
 
 
 	// -------------------------------------------------------------------------
@@ -46,6 +52,7 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 
 	onLoad(() => {
 		initializeScrollPaddingTop();
+		vhd = isIos ? getViewHeightDifference() : 0;
 
 		elm = id ? document.getElementById(id) : document.getElementsByClassName(CLS_ELM)[0];
 		if (!elm) return;
@@ -53,6 +60,8 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 
 		onResize(onResizeHandler, true);
 		onScroll(update, true);
+
+		scrollToHash();
 	});
 
 	function onResizeHandler() {
@@ -60,7 +69,7 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 		if (isEnabled) {
 			cmsBarHeight = getCmsBarHeight();
 			adjustFloating();
-			update();
+			update(true);
 		}
 	}
 
@@ -80,18 +89,28 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 	}
 
 	function adjustFloating() {
-		origTop = getStaticBoundingClientRect(elm).top + window.scrollY;
-		elm.style.top = origTop + offsetTop + 'px';
+		const r  = getStaticBoundingClientRect(elm);
+		const rh = remainingHeight(elm, elmTop);
 
-		const h = elm.getBoundingClientRect().height + origTop + offsetTop + scrollPaddingOffset;
-		setScrollPaddingTop('gida-header', h);
+		origTop   = r.top + window.scrollY;
+		origMid   = r.top + window.scrollY + rh;
+		offsetTop = Math.ceil(cmsBarHeight - rh);
+
+		safePaddingOffset = Math.ceil(r.bottom + window.scrollY + scrollPaddingOffset);
 	}
 
-	function update() {
+	function update(force = false) {
 		if (!isEnabled) return;
-		setFloating(window.pageYOffset !== 0);
-		const top = getStaticBoundingClientRect(elm).top + relativeOffsetTop(elm, elmTop);
-		setOffset(top <= cmsBarHeight);
+		setFloating(10 < window.pageYOffset);
+		setOffset(origMid + margin <= window.scrollY + cmsBarHeight, force);
+
+		setTimeout(() => {
+			let po = safePaddingOffset;
+			if (elm.classList.contains(CLS_OFFSET)) {
+				po = Math.ceil(elm.getBoundingClientRect().height + offsetTop + scrollPaddingOffset);
+			}
+			setScrollPaddingTop('gida-header', po + vhd);
+		}, 0);
 	}
 
 	function setFloating(flag) {
@@ -103,23 +122,21 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 		}
 	}
 
-	function setOffset(flag) {
-		if (elm.classList.contains(CLS_OFFSET) === flag) return;
-		if (Math.abs(lastSwitchedY - window.scrollY) <= minSwitchingOffset) return;
-		lastSwitchedY = window.scrollY;
-		if (Math.abs(lastSwitchedT - performance.now()) <= minSwitchingTime) return;
-		lastSwitchedT = performance.now();
-
-		offsetTop = flag ? (-origTop + cmsBarHeight - relativeOffsetTop(elm, elmTop)) : 0;
+	function setOffset(flag, force) {
+		if (!force) {
+			if (elm.classList.contains(CLS_OFFSET) === flag) return;
+			if (Math.abs(lastSwitchedY - window.scrollY) <= minSwitchingOffset) return;
+			lastSwitchedY = window.scrollY;
+			if (Math.abs(lastSwitchedT - performance.now()) <= minSwitchingTime) return;
+			lastSwitchedT = performance.now();
+		}
 		if (flag) {
 			elm.classList.add(CLS_OFFSET);
+			elm.style.top = offsetTop + 'px';
 		} else {
 			elm.classList.remove(CLS_OFFSET);
+			elm.style.top = origTop + 'px';
 		}
-		elm.style.top = origTop + offsetTop + 'px';
-
-		const h = elm.getBoundingClientRect().height + origTop + offsetTop + scrollPaddingOffset;
-		setScrollPaddingTop('gida-header', h);
 	}
 
 

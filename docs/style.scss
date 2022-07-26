@@ -2,7 +2,7 @@
  * Styles for Sample (SCSS)
  *
  * @author Takuto Yanagida
- * @version 2022-07-25
+ * @version 2022-07-26
  */
 
 
@@ -32,9 +32,6 @@ html {
 body {
 	min-height   : 200vh;
 	padding-block: 4vh;
-
-	min-height   : 200dvh;
-	padding-block: 4dvh;
 }
 
 pre {
@@ -99,7 +96,7 @@ pre {
 
 .gida-header.fixed {
 	&.sticky {
-		transition: top 0.2s, box-shadow 0.2s;
+		transition: top 0.4s, box-shadow 0.2s;
 
 		.gida-header-top {
 			transition: padding 0.2s;
@@ -130,6 +127,10 @@ pre {
 .gida-header.slide {
 	&.sticky {
 		transition: top 0.4s, box-shadow 0.2s;
+
+		.gida-header-top {
+			transition: padding 0.2s;
+		}
 	}
 	&.floating {
 		transition: top 1s, box-shadow 0.2s;

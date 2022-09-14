@@ -2,7 +2,7 @@
  * Common Functions
  *
  * @author Takuto Yanagida
- * @version 2022-07-27
+ * @version 2022-09-14
  */
 
 
@@ -69,15 +69,20 @@ function getCmsBarHeight() {
 	return parseFloat(getComputedStyle(document.documentElement).marginTop);
 }
 
-function getViewHeightDifference() {
-	const de = document.createElement('div');
-	de.style.opacity  = 0;
-	de.style.position = 'absolute';
-	de.style.height   = 'calc(100lvh - 100svh)';
-	document.body.appendChild(de);
-	const vhd = de.clientHeight;
-	document.body.removeChild(de);
-	return vhd;
+function getViewHeight() {
+	const el = document.createElement('div');
+	const es = document.createElement('div');
+	el.style.opacity  = es.style.opacity  = 0;
+	el.style.position = es.style.position = 'absolute';
+	el.style.height   = '100lvh'
+	es.style.height   = '100svh';
+	document.body.appendChild(el);
+	document.body.appendChild(es);
+	const lvh = el.clientHeight;
+	const svh = es.clientHeight;
+	document.body.removeChild(el);
+	document.body.removeChild(es);
+	return [lvh, svh];
 }
 
 

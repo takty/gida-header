@@ -2,7 +2,7 @@
  * Gida Header - Fixed
  *
  * @author Takuto Yanagida
- * @version 2022-07-27
+ * @version 2022-09-14
  */
 
 
@@ -36,7 +36,10 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 	let offsetTop     = 0;
 
 	let safePaddingOffset = 0;
-	let vhd               = 0;
+	let lvh               = 0;
+	let svh               = 0;
+	let lastResizedWidth  = 0;
+
 	const isIos = null !== navigator.userAgent.match(/iPad|iPhone|iPod/) || (navigator.platform === 'MacIntel' && 1 < navigator.maxTouchPoints);
 
 
@@ -52,7 +55,6 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 
 	onLoad(() => {
 		initializeScrollPaddingTop();
-		vhd = isIos ? getViewHeightDifference() : 0;
 
 		elm = id ? document.getElementById(id) : document.getElementsByClassName(CLS_ELM)[0];
 		if (!elm) return;
@@ -65,6 +67,10 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 	});
 
 	function onResizeHandler() {
+		if (lastResizedWidth !== window.innerWidth) {
+			[lvh, svh] = isIos ? getViewHeight() : [window.innerHeight, window.innerHeight];
+			lastResizedWidth = window.innerWidth;
+		}
 		setEnabled(isStickable());
 		if (isEnabled) {
 			cmsBarHeight = getCmsBarHeight();
@@ -109,7 +115,7 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 			if (elm.classList.contains(CLS_OFFSET)) {
 				po = Math.ceil(elm.getBoundingClientRect().height + offsetTop + scrollPaddingOffset);
 			}
-			setScrollPaddingTop('gida-header', po + vhd);
+			setScrollPaddingTop('gida-header', po + (lvh - svh));
 		}, 0);
 	}
 
@@ -145,7 +151,7 @@ window['GIDA'].header_fixed = function (id = null, opts = {}) {
 
 	function isStickable() {
 		if (window.innerWidth < minWindowWidth) return false;
-		if (window.innerHeight * maxHeaderHeightRate < elmTop.clientHeight) return false;
+		if (svh * maxHeaderHeightRate < elmTop.clientHeight) return false;
 		return true;
 	}
 

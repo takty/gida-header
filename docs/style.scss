@@ -2,7 +2,7 @@
  * Styles for Sample (SCSS)
  *
  * @author Takuto Yanagida
- * @version 2022-07-26
+ * @version 2022-09-14
  */
 
 
@@ -30,6 +30,7 @@ html {
 }
 
 body {
+	margin       : 0;
 	min-height   : 200vh;
 	padding-block: 4vh;
 }
@@ -71,6 +72,15 @@ pre {
 	&.offset {
 		background-color: rgb(green, 0.1);
 		--state: 'offset';
+	}
+	&.sticky.floating {
+		--state: 'sticky floating';
+	}
+	&.sticky.offset {
+		--state: 'sticky offset';
+	}
+	&.sticky.floating.offset {
+		--state: 'sticky floating offset';
 	}
 
 	position: relative;

@@ -2,22 +2,15 @@
  * Gulpfile
  *
  * @author Takuto Yanagida
- * @version 2022-07-22
+ * @version 2022-12-09
  */
 
+import gulp from 'gulp';
 
-'use strict';
-
-const gulp = require('gulp');
-
-const { makeJsTask }        = require('./task-js');
-const { makeSassTask }      = require('./task-sass');
-const { makeCopyTask }      = require('./task-copy');
-const { makeTimestampTask } = require('./task-timestamp');
-
-
-// -----------------------------------------------------------------------------
-
+import { makeJsTask } from './gulp/task-js.mjs';
+import { makeSassTask } from './gulp/task-sass.mjs';
+import { makeCopyTask } from './gulp/task-copy.mjs';
+import { makeTimestampTask } from './gulp/task-timestamp.mjs';
 
 const js = gulp.parallel(
 	makeJsTask('./src/fixed.js',  './dist/js'),
@@ -25,14 +18,14 @@ const js = gulp.parallel(
 	makeJsTask('./src/slide.js', './dist/js'),
 );
 
-exports.build = gulp.parallel(js);
+export const build = gulp.parallel(js);
 
-const watch = (done) => {
+const watch = done => {
 	gulp.watch('src/**/*.js', gulp.series(js));
 	done();
 };
 
-exports.default = gulp.series(exports.build, watch);
+export default gulp.series(build, watch);
 
 
 // -----------------------------------------------------------------------------
@@ -44,7 +37,7 @@ const doc_sass = makeSassTask('docs/style.scss', './docs/css');
 
 const doc_timestamp = makeTimestampTask('docs/**/*.html', './docs');
 
-const doc_watch = (done) => {
+const doc_watch = done => {
 	gulp.watch('src/**/*.js', gulp.series(doc_js, doc_timestamp));
 	gulp.watch('src/**/*.scss', gulp.series(doc_timestamp));
 	gulp.watch('docs/style.scss', gulp.series(doc_sass, doc_timestamp));
@@ -53,4 +46,4 @@ const doc_watch = (done) => {
 
 const doc_build = gulp.parallel(doc_js, doc_sass, doc_timestamp);
 
-exports.doc = gulp.series(doc_build, doc_watch);
+export const doc = gulp.series(doc_build, doc_watch);
